@@ -1,5 +1,4 @@
 import { ADD_CONTACT, DELETE_CONTACT, SET_CURRENT, CLEAR_CURRENT, UPDATE_CONTACT, FILTER_CONTACTS, CLEAR_FILTER } from "../types";
-import { STATES } from "mongoose";
 
 const contactReducer = (state, action) => {
 	switch (action.type) {
@@ -34,10 +33,19 @@ const contactReducer = (state, action) => {
 			};
 
 		case FILTER_CONTACTS:
-			return state;
+			return {
+				...state,
+				filtered: state.contacts.filter(contact => {
+					const regex = new RegExp(`${action.payload}`, "gi");
+					return contact.name.match(regex) || contact.email.match(regex);
+				})
+			};
 
 		case CLEAR_FILTER:
-			return state;
+			return {
+				...state,
+				filtered: null
+			};
 
 		default:
 			return state;
